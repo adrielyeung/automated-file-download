@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
 import os
+import sys
 import shutil
 import time
 
@@ -11,7 +12,7 @@ import time
 month = input("Enter month: ")
 year = input("Enter year: ")
 
-# Set options for headless Chrome
+# Set options for headless Chrome (pls set driver path)
 download_path = '<default_download_path>'
 options = Options()
 options.headless = True
@@ -55,7 +56,7 @@ try:
     title = driver.find_element_by_xpath("//*[ text() = 'Logout' ]")
     print('Successfully logged in')
 except NoSuchElementException:
-    print('Incorrect login/password')
+    sys.exit("Incorrect login/password")
 
 # Access document element
 driver.find_element_by_xpath('/html/body/map/area[3]').click()
