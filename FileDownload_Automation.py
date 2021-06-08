@@ -2,6 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
+import chromedriver_autoinstaller
 import pandas as pd
 import os
 import sys
@@ -26,15 +27,19 @@ options.add_experimental_option("prefs", {
         "download.directory_upgrade": True,
         "safebrowsing_for_trusted_sources_enabled": False,
         "safebrowsing.enabled": False,
-        "plugins.always_open_pdf_externally": True #It will not show PDF directly in chrome
+        "plugins.always_open_pdf_externally": True # It will not show PDF directly in chrome
 })
 options.add_argument('--disable-gpu')
 options.add_argument('--disable-software-rasterizer')
 
 # Set Chrome driver path (pls change to correct driver path)
-DRIVER_PATH = '<driver_path>'
+# This checks if the current version of chromedriver exists
+# and if it doesn't exist, downloads it automatically,
+# then adds chromedriver to path
+chromedriver_autoinstaller.install()
+
 # driver = webdriver.Chrome(executable_path=DRIVER_PATH)
-driver = webdriver.Chrome(options=options, executable_path=DRIVER_PATH)
+driver = webdriver.Chrome(options=options)
 
 # Read credentials and URL
 credentials = pd.read_csv('Credentials.csv')
@@ -66,8 +71,8 @@ driver.find_element_by_xpath('/html/body/table[1]/tbody/tr/td/table/tbody/tr[3]/
 time.sleep(5)
 
 # Select month and year using dropdown box
-driver.find_element_by_xpath("//select[@name='year']/option[@value='" + year + "']").click()
-driver.find_element_by_xpath("//select[@name='month']/option[@value='" + month + "']").click()
+driver.find_element_by_xpath(f"//select[@name='year']/option[@value='{year}']").click()
+driver.find_element_by_xpath(f"//select[@name='month']/option[@value='{month}']").click()
 time.sleep(5)
 
 driver.find_element_by_xpath('/html/body/div/table[3]/tbody/tr[2]/td/form/table/tbody/tr/td[3]/div/img').click()
@@ -86,6 +91,6 @@ driver.quit()
 # Get latest downloaded file
 filename = max([download_path + "\\" + f for f in os.listdir(download_path)],key=os.path.getctime)
 # Change filename to specified
-shutil.move(filename, os.path.join(download_path, year + r"-" + month + r".pdf"))
+shutil.move(filename, os.path.join(download_path, f"{year} - {month}.pdf"))
 time.sleep(1)
 print("Finished successfully")
