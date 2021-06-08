@@ -91,6 +91,6 @@ driver.quit()
 # Get latest downloaded file
 filename = max([download_path + "\\" + f for f in os.listdir(download_path)],key=os.path.getctime)
 # Change filename to specified
-shutil.move(filename, os.path.join(download_path, f"{year} - {month}.pdf"))
+shutil.move(filename, os.path.join(download_path, f"{year}-{month}.pdf"))
 time.sleep(1)
 print("Finished successfully")
